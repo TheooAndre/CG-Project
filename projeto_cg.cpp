@@ -22,6 +22,13 @@ GLfloat tam = 1.0;
 
 GLint    msec = 100;					//.. definicao do timer (actualizacao)
 
+void initMaterials(int material);
+char Materiais[18][30] = {
+	"Esmerald",  "Jade",  "obsidian",    "Pearl",        "Ruby",
+	"Turquoise", "Brass", "Bronze",      "Chrome",       "Copper",
+	"Gold",      "Silver","blackPlastic","cyankPlastic", "greenPlastic",
+	"redPlastic", "whitePlastic","yellowPlastic" };
+
 //added texturas 
 
 
@@ -109,35 +116,35 @@ static GLfloat normais[] = {
 //------------------------------------------------------------ Cores
 static GLfloat cor[] = {
 	//…………………………………………………………………………………………………… x=tam (Esquerda) - BROWN
-	  0.5,  0.2, 0.1,	// 0 
-	  0.5,  0.2, 0.1,	// 1 
-	  0.5,  0.2, 0.1,	// 2 
-	  0.5,  0.2, 0.1,	// 3 
+	  0.0,  0.0, 1.0,	// 0 
+	  0.0,  0.0, 1.0,	// 1 
+	  0.0,  0.0, 1.0,	// 2 
+	  0.0,  0.0, 1.0,	// 3 
 
-	 0.5,  0.2, 0.1,	// 0 
-	  0.5,  0.2, 0.1,	// 1 
-	  0.5,  0.2, 0.1,	// 2 
-	  0.5,  0.2, 0.1,	// 3 
+	  0.0,  0.0, 1.0,	// 0 
+	  0.0,  0.0, 1.0,	// 1 
+	  0.0,  0.0, 1.0,	// 2 
+	   0.0,  0.0, 1.0,	// 3 
 	//…………………………………………………………………………………………………… x=2*tam (Direita) - BROWN
-	  0.5,  0.2, 0.1,	// 4 
-	  0.5,  0.2, 0.1,	// 5 
-	  0.5,  0.2, 0.1,	// 6 
-	  0.5,  0.2, 0.1,	// 7 
+	  0.0,  0.0, 1.0,	// 4 
+	   0.0,  0.0, 1.0,	// 5 
+	  0.0,  0.0, 1.0,	// 6 
+	  0.0,  0.0, 1.0,	// 7 
 
-	  0.5,  0.2, 0.1,	// 0 
-	  0.5,  0.2, 0.1,	// 1 
-	  0.5,  0.2, 0.1,	// 2 
-	  0.5,  0.2, 0.1,	// 3 
+	  0.0,  0.0, 1.0,	// 0 
+	  0.0,  0.0, 1.0,	// 1 
+	   0.0,  0.0, 1.0,	// 2 
+	   0.0,  0.0, 1.0,	// 3 
 	//…………………………………………………………………………………………………… y=tam (Cima) - BROWN
-	  0.5,  0.2, 0.1,	// 0 
-	  0.5,  0.2, 0.1,	// 1 
-	  0.5,  0.2, 0.1,	// 2 
-	  0.5,  0.2, 0.1,	// 3 
+	  0.0,  0.0, 1.0,	// 0 
+	  0.0,  0.0, 1.0,	// 1 
+	  0.0,  0.0, 1.0,	// 2 
+	  0.0,  0.0, 1.0,	// 3 
 
-	  0.5,  0.2, 0.1,	// 8 
-	  0.5,  0.2, 0.1,	// 9 
-	  0.5,  0.2, 0.1,	// 10 
-	  0.5,  0.2, 0.1,	// 11 
+	  0.0,  0.0, 1.0,	// 8 
+	  0.0,  0.0, 1.0,	// 9 
+	  0.0,  0.0, 1.0,	// 10 
+	  0.0,  0.0, 1.0,	// 11 
 };
 
 //Added Texturas
@@ -169,6 +176,39 @@ GLfloat  incZoom = 3;
 GLfloat xPosition = 0.0, yPosition = 2.0, zPosition = 0.0, zPosJ = 0.0, angle = 0, new_angle = 0, mesaY = 0.1, mesaX = 0, mesaZ = 0, zPosJ2 = 0.0, rot_orient = 1.0;
 GLint gav_um = 1, limite = 1, gav_dois = 1, door = 0;
 
+//---------------------------------------------------- AMBIENTE - fixa
+GLint   Dia = 1;     //:::   'D'  
+GLfloat intensidadeDia = 0.7;
+GLfloat luzGlobalCorAmb[4] = { intensidadeDia, intensidadeDia,intensidadeDia, 1.0 };   // 
+
+//---------------------------------------------------- TETO
+GLint   ligaTeto = 1;		 //:::   'T'  
+GLfloat intensidadeT = 0.3;  //:::   'I'  
+GLint   luzR = 1;		 	 //:::   'R'  
+GLint   luzG = 1;			 //:::   'G'  
+GLint   luzB = 1;			 //:::   'B'  
+GLfloat localPos[4] = { 0, 10.0, 0, 1.0 };   // no teto
+GLfloat localCorAmb[4] = { luzR, luzG, luzB, 1.0 };
+GLfloat localCorDif[4] = { luzR, luzG, luzB, 1.0 };
+GLfloat localCorEsp[4] = { luzR, luzG, luzB, 1.0 };
+GLfloat localAttCon = 0.1;
+GLfloat localAttLin = 0.1;
+GLfloat localAttQua = 0.1;
+
+GLfloat   quadS = 6.0;
+GLint     material = 1;
+
+
+//…………………………………………………………………………………………………………………………………………… Textura Quadro
+void initLights(void) {
+	//…………………………………………………………………………………………………………………………………………… Ambiente
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzGlobalCorAmb);
+	//…………………………………………………………………………………………………………………………………………… Teto
+	glLightfv(GL_LIGHT0, GL_POSITION, localPos);
+	glLightfv(GL_LIGHT0, GL_AMBIENT, localCorAmb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, localCorDif);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, localCorEsp);
+}
 
 //=================================================================== TEXTURAS
 
@@ -295,8 +335,15 @@ void inicializa(void)
 
 	glEnable(GL_NORMALIZE);
 
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	initLights();
+	initMaterials(22);
+
 	//Added Texturas
-	
+	//initMaterials(22);
+
 	initTexturas();
 
 	glVertexPointer(3, GL_FLOAT, 0, vertices); //………………………………………VertexArrays: vertices + normais + cores
@@ -304,7 +351,7 @@ void inicializa(void)
 	glNormalPointer(GL_FLOAT, 0, normais);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, cor);
-	glEnableClientState(GL_COLOR_ARRAY);
+	//glEnableClientState(GL_COLOR_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, arrayTexture);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
@@ -335,7 +382,7 @@ void drawFundoLid() {
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glPushMatrix();
 	glTranslatef(0.0, 2.45, 0.0 - 0.9);
-	glScalef(2, 0.1, 1);
+	glScalef(1.8, 0.1, 0.8);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
@@ -348,11 +395,14 @@ void drawFundoLid() {
 
 void Door_Handle(){
 	/*TODO */
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture[2]);
+	initMaterials(2);
+	glEnable(GL_COLOR_MATERIAL);
+	//glColor4f(BLUE);
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glPushMatrix();
-	glTranslatef(0.0, 2.45, 0.0 - 0.9);
-	glScalef(2, 0.1, 1);
+	glTranslatef(0.6, 2.45,0.22);
+	glScalef(0.22, 0.08,0.11);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
@@ -360,7 +410,28 @@ void Door_Handle(){
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, frente);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, back);
 	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_TEXTURE_2D);
+}
+
+void Door_Handle2() {
+	/*TODO */
+	initMaterials(2);
+	//glEnable(GL_COLOR_MATERIAL);
+	//glColor4f(BLUE);
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_Ambient);
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, texture[3]);
+	glPushMatrix();
+	glTranslatef(-0.4, 2.45, 0.22);
+	glScalef(0.22, 0.08, 0.11);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, frente);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, back);
+	glPopMatrix();
+	//glDisable(GL_TEXTURE_2D);
 }
 
 void drawEixos()
@@ -392,7 +463,7 @@ void drawGaveta() {
 	glPushMatrix();
 	glTranslatef(0.0, 0.68, zPosJ2 - 0.9);
 	//glRotatef(angle, 0.0, 1.0, 0.0);
-	glScalef(2, 0.6, 1);
+	glScalef(1.8, 0.6, 0.8);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda); // desenhar uma das faces da mesa
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
@@ -408,7 +479,7 @@ void drawGaveta2() {
 	glPushMatrix();
 	glTranslatef(0.0, 1.90, zPosJ - 0.9);
 	//glRotatef(angle, 0.0, 1.0, 0.0);
-	glScalef(2, 0.6, 1);
+	glScalef(1.8, 0.6, 0.8);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda); // desenhar uma das faces da mesa
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
@@ -518,7 +589,7 @@ void display(void) {
 	//================================================================= APaga ecrã e lida com profundidade (3D)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+	glEnable(GL_LIGHTING);
 	//================================================================= Não modificar !!!!!!!!!!!!
 	glViewport(0, 0, wScreen, hScreen);
 	glMatrixMode(GL_PROJECTION);
@@ -539,8 +610,8 @@ void display(void) {
 	drawGaveta2();
 	drawPortaEsq();
 	drawPortaDir();
-	
-
+	Door_Handle();
+	Door_Handle2();
 	
 	//. . . . . . . . . . . . . . . . . . . . .  Actualizacao
 	glutSwapBuffers();

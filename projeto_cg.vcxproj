@@ -147,10 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="materiais.cpp" />
     <ClCompile Include="projeto_cg.cpp" />
     <ClCompile Include="RgbImage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="materiais.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RgbImage.h" />
   </ItemGroup>

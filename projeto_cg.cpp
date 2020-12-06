@@ -329,7 +329,8 @@ void initTexturas() {
 //=========================================================================== INIT
 void inicializa(void)
 {
-	glClearColor(1, 1, 1, 1);		//………………………………………………………………………………Apagar
+	glClearColor(0,0,0, 1);		//………………………………………………………………………………Apagar
+	//glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);	//………………………………………………………………………………Profundidade
 	glShadeModel(GL_SMOOTH);	//………………………………………………………………………………Interpolacao de cores	
 
@@ -339,7 +340,7 @@ void inicializa(void)
 	glEnable(GL_LIGHT0);
 
 	initLights();
-	initMaterials(22);
+	//initMaterials(22);
 
 	//Added Texturas
 	//initMaterials(22);
@@ -351,7 +352,7 @@ void inicializa(void)
 	glNormalPointer(GL_FLOAT, 0, normais);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glColorPointer(3, GL_FLOAT, 0, cor);
-	//glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
 	glTexCoordPointer(2, GL_FLOAT, 0, arrayTexture);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
@@ -395,12 +396,12 @@ void drawFundoLid() {
 
 void Door_Handle(){
 	/*TODO */
-	initMaterials(10);
-	glEnable(GL_COLOR_MATERIAL);
-	//glColor4f(BLUE);
+	
 	//glEnable(GL_TEXTURE_2D);
 	//glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glPushMatrix();
+	initMaterials(11);
+	glColor4f(BLACK);
 	glTranslatef(0.6, 2.45,0.22);
 	glScalef(0.22, 0.08,0.11);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
@@ -415,13 +416,15 @@ void Door_Handle(){
 
 void Door_Handle2() {
 	/*TODO */
-	initMaterials(10);
+	
 	//glEnable(GL_COLOR_MATERIAL);
 	//glColor4f(BLUE);
 	//glColorMaterial(GL_FRONT_AND_BACK, GL_Ambient);
 	//glEnable(GL_TEXTURE_2D);
 	//glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glPushMatrix();
+	initMaterials(11);
+	glColor4f(BLACK);
 	glTranslatef(-0.4, 2.45, 0.22);
 	glScalef(0.22, 0.08, 0.11);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
@@ -563,6 +566,7 @@ void drawPortaDir() {
 
 void drawVidro() {
 	
+	glColor4f(0, 0, 0, 0);
 	//glColorPointer(3, GL_FLOAT, 0, cor);	// podia ser modificada a cor !
 	glPushMatrix();
 
@@ -627,6 +631,8 @@ void display(void) {
 
 	
 	//…………………………………………………………………………………………………………………………………………………………Objectos
+	Door_Handle();
+	Door_Handle2();
 	drawEixos();
 	drawChao();
 	drawGaveta();
@@ -635,8 +641,7 @@ void display(void) {
 	drawGaveta2();
 	drawPortaEsq();
 	drawPortaDir();
-	Door_Handle();
-	Door_Handle2();
+
 	drawVidro();
 	
 	//. . . . . . . . . . . . . . . . . . . . .  Actualizacao

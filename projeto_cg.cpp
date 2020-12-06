@@ -329,7 +329,7 @@ void initTexturas() {
 //=========================================================================== INIT
 void inicializa(void)
 {
-	glClearColor(BLACK);		//………………………………………………………………………………Apagar
+	glClearColor(1, 1, 1, 1);		//………………………………………………………………………………Apagar
 	glEnable(GL_DEPTH_TEST);	//………………………………………………………………………………Profundidade
 	glShadeModel(GL_SMOOTH);	//………………………………………………………………………………Interpolacao de cores	
 
@@ -365,7 +365,7 @@ void drawChao() {
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glPushMatrix();
 	glTranslatef(0, 0.0, 0);
-	glColor4f(BLACK);
+	//glColor4f(BLACK);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0f, 0.0f);  	 glVertex3i(-xC, 0, -xC);
 	glTexCoord2f(1.0f, 0.0f); 	 glVertex3i(-xC, 0, xC);
@@ -395,7 +395,7 @@ void drawFundoLid() {
 
 void Door_Handle(){
 	/*TODO */
-	initMaterials(2);
+	initMaterials(10);
 	glEnable(GL_COLOR_MATERIAL);
 	//glColor4f(BLUE);
 	//glEnable(GL_TEXTURE_2D);
@@ -415,7 +415,7 @@ void Door_Handle(){
 
 void Door_Handle2() {
 	/*TODO */
-	initMaterials(2);
+	initMaterials(10);
 	//glEnable(GL_COLOR_MATERIAL);
 	//glColor4f(BLUE);
 	//glColorMaterial(GL_FRONT_AND_BACK, GL_Ambient);
@@ -531,17 +531,18 @@ void drawPortaEsq() {
 	glDisable(GL_TEXTURE_2D);
 }
 
+
 void drawPortaDir() {
-	
+
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	//glColorPointer(3, GL_FLOAT, 0, cor);	 podia ser modificada a cor !
 	glPushMatrix();
-	
+
 	glTranslatef(rot_orient, yPosition, zPosition);
 	glRotatef(new_angle, 0.0, 1.0, 0.0);
 	glScalef(1, 2, 0.1);
-	
+
 
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
@@ -557,6 +558,30 @@ void drawPortaDir() {
 
 
 }
+
+
+
+void drawVidro() {
+	
+	//glColorPointer(3, GL_FLOAT, 0, cor);	// podia ser modificada a cor !
+	glPushMatrix();
+
+	glTranslatef(0.0, 3.2, -0.1);
+	glRotatef(0.0, 0.0, 1.0, 0.0);
+	glScalef(1.8, 0.6, 0.1);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, frente);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, back);
+
+	glPopMatrix();
+	
+}
+
+
+
 
 void drawScene() {
 
@@ -612,6 +637,7 @@ void display(void) {
 	drawPortaDir();
 	Door_Handle();
 	Door_Handle2();
+	drawVidro();
 	
 	//. . . . . . . . . . . . . . . . . . . . .  Actualizacao
 	glutSwapBuffers();

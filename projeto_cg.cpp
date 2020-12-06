@@ -468,7 +468,7 @@ void drawGaveta() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glPushMatrix();
-	
+	//
 	glTranslatef(0.0, 0.68, zPosJ2 - 0.9);
 	//glRotatef(angle, 0.0, 1.0, 0.0);
 	glScalef(1.8, 0.6, 0.8);

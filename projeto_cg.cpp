@@ -1,10 +1,20 @@
 
-//Adicionar uma maçaneta
+//----------------------------------------CHANGE ALL x64 FILES 64 TO x86 tut do microsoft sdk
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <GL/freeglut.h>
+#include <windows.h>			// printf
+#include <stdio.h>				// printf
+#include <fstream>				// printf
+
+#include <string>
+#include <fstream>
+
+#include <errno.h>
+#include <GL\glew.h>			// openGL
+#include <GL\freeGlut.h>		// openGL
+
+#pragma comment(lib,"glew32d.lib")
+#pragma comment(lib,"glu32.lib")
+#pragma comment(lib,"opengl32.lib")
 
 //--------------------------------- Definir cores
 #define BLUE     0.0, 0.0, 1.0, 1.0
@@ -23,14 +33,13 @@ GLfloat tam = 1.0;
 
 GLint    msec = 100;					//.. definicao do timer (actualizacao)
 
+//materiais
 void initMaterials(int material);
 char Materiais[18][30] = {
 	"Esmerald",  "Jade",  "obsidian",    "Pearl",        "Ruby",
 	"Turquoise", "Brass", "Bronze",      "Chrome",       "Copper",
 	"Gold",      "Silver","blackPlastic","cyankPlastic", "greenPlastic",
 	"redPlastic", "whitePlastic","yellowPlastic" };
-
-//added texturas 
 
 
 static GLfloat vertices[] = {
@@ -195,10 +204,10 @@ GLfloat localCorEsp[4] = { (GLfloat)luzR * intensidadeT,(GLfloat)luzG * intensid
 GLint   ligaFoco = 1;
 GLfloat focoCutoff = 4.0;
 GLfloat focoExponent = 10.0;
-GLfloat focoPini[4] = { 0, 5, 3, 1.0 };
-GLfloat focoPfim[4] = { 0, 2, 0, 1.0 };
+GLfloat focoPini[4] = { 0, 1, 1, 1.0 };
+GLfloat focoPfim[4] = { 0, 1, 0, 1.0 };
 GLfloat focoDir[4] = { focoPfim[0] - focoPini[0], focoPfim[1] - focoPini[1], focoPfim[2] - focoPini[2], 0.0 };
-GLint   focoLuzR = 1;              //:::   'R'
+GLint   focoLuzR = 1;             //:::   'R'
 GLint   focoLuzG = 1;             //:::   'G'
 GLint   focoLuzB = 1;             //:::   'B'
 GLfloat focoCorAmb[4] = { (GLfloat)focoLuzR,(GLfloat)focoLuzG,(GLfloat)focoLuzB, 0.0 };
@@ -208,12 +217,11 @@ GLfloat focoCorEsp[4] = { (GLfloat)focoLuzR,(GLfloat)focoLuzG,(GLfloat)focoLuzB,
 //Transparência
 GLint Transp = 0;
 
-GLfloat   quadS = 6.0;
 
 //nr do material
-GLint     material = 8;
+GLint     material = 11;
 
-
+GLUquadric* quad;
 
 //…………………………………………………………………………………………………………………………………………… Textura Quadro
 void initLights(void) {
@@ -318,6 +326,118 @@ void initTexturas()
 		imag.ImageData());
 }
 
+
+//===============================================================================
+//     SHADERS -READ, LINK, COMPILE, USAVEL
+//===============================================================================
+//------------------------------------------ Definição dos ficheiros dos shaders: vertices + fragmentos
+char filenameV[] = "Vshader_bin1.txt";
+char filenameF[] = "Fshader_bin1.txt";
+
+GLint  uniOp;
+GLint  uniDir = 0;
+float  Direcao[] = { 1, 0, 0 };
+float  opcao = -45;
+GLint uniPosition;
+GLfloat uniCount = 0;
+GLint flagCount = 0;
+//---------------------------------------------------------- SHADERS variaveis
+char* VertexShaderSource;
+char* FragmentShaderSource;
+GLuint  VertexShader, FragmentShader;
+GLuint  ShaderProgram;
+
+
+char* readShaderFile(char* FileName);
+//============================================= 1. Ler um ficheiro com um shader
+char* readShaderFile(char* FileName) {
+	char* DATA = NULL;
+	int   flength = 0;
+	FILE* filepoint;
+	errno_t err;
+
+	err = fopen_s(&filepoint, FileName, "r");
+	if (!err) {
+		fseek(filepoint, 0, SEEK_END);
+		flength = ftell(filepoint);
+		rewind(filepoint);
+
+		DATA = (char*)malloc(sizeof(char) * (flength + 1));
+		flength = fread(DATA, sizeof(char), flength, filepoint);
+
+		DATA[flength] = '\0';
+		fclose(filepoint);
+		return DATA;
+	}
+	else {
+		printf(" --------  Error while reading  %s ", FileName);
+	}
+}
+//============================================= 2. Criar, compilar, linkar, e usar
+void BuiltShader(void) {
+
+	// GLEW_ARB_vertex_shader;
+	// GLEW_ARB_fragment_shader;
+
+	//......................................................... Criar
+	VertexShader = glCreateShader(GL_VERTEX_SHADER);
+	FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	VertexShaderSource = readShaderFile(filenameV);
+	FragmentShaderSource = readShaderFile(filenameF);
+
+	const char* VS = VertexShaderSource;
+	const char* FS = FragmentShaderSource;
+	glShaderSource(VertexShader, 1, &VS, NULL);
+	glShaderSource(FragmentShader, 1, &FS, NULL);
+	free(VertexShaderSource);
+	free(FragmentShaderSource);
+
+	//......................................................... Compilar
+	glCompileShaderARB(VertexShader);
+	glCompileShaderARB(FragmentShader);
+
+	//......................................................... Criar e Linkar
+	ShaderProgram = glCreateProgramObjectARB();
+	glAttachShader(ShaderProgram, VertexShader);
+	glAttachShader(ShaderProgram, FragmentShader);
+	glLinkProgram(ShaderProgram);
+
+	//......................................................... Usar
+	glUseProgramObjectARB(ShaderProgram);
+}
+
+void InitShader(void) {
+	//------------------------ Criar+linkar
+	BuiltShader();
+	uniPosition = glGetUniformLocation(ShaderProgram, "PositionNumber");
+	glUniform1f(uniPosition, uniCount);
+
+	glUniform1f(uniOp, opcao);
+	glUniform3fv(uniDir, 1, Direcao);
+
+	Direcao[0] = cos((3.14 * opcao / 180.0));
+	Direcao[2] = sin((3.14 * opcao / 180.0));
+
+	uniDir = glGetUniformLocation(ShaderProgram, "Direcao");
+	glUniform3fv(uniDir, 1, Direcao);
+	uniOp = glGetUniformLocation(ShaderProgram, "opcao");
+	glUniform1f(uniOp, opcao);
+
+}
+//============================================= 3.Libertar os Shaders
+void DeInitShader(void) {
+	glDetachShader(ShaderProgram, VertexShader);
+	glDetachShader(ShaderProgram, FragmentShader);
+	glDeleteShader(ShaderProgram);
+
+}
+//===============================================================================
+//     SHADERS -READ, LINK, COMPILE
+//===============================================================================
+
+
+
+
 //================================================================================
 //=========================================================================== INIT
 void inicializa(void)
@@ -349,6 +469,17 @@ void inicializa(void)
 	glTexCoordPointer(2, GL_FLOAT, 0, arrayTexture);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
+void draw_meta3() {
+	glPushMatrix();
+	InitShader();
+	glTranslatef(1.5, 1.55, 2);
+	quad = gluNewQuadric();
+	gluSphere(quad, 2, 100, 20);
+	DeInitShader();
+	glLinkProgram(NULL);
+	glPopMatrix();
+}
+
 
 void drawChao() {
 
@@ -598,31 +729,7 @@ void drawVidro() {
 
 
 
-void drawScene() {
 
-	//=================================================== Qual o lado visivel ???
-	if (frenteVisivel);
-	//falta fazer
-
-   //==================================== MESA	
-   // ?? escala, rotacao, translacao ??
-	glPushMatrix();
-	glScalef(2, 2, 2);
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
-	//?? face esquerda
-	//?? face direita
-
-	glPopMatrix();
-
-
-	//==================================== Chaleira Amarela
-	glColor4f(YELLOW);
-	glPushMatrix();
-	//?? escala, rotacao, translacao ??
-	glutWireTeapot(1);
-	glPopMatrix();
-
-}
 
 void iluminacao() {
 	if (ligaTeto)  glEnable(GL_LIGHT0);
@@ -666,8 +773,7 @@ void display(void) {
 	drawPortaEsq();
 	drawPortaDir();
 	drawVidro();
-
-	//drawTudo();
+	//draw_meta3();
 	//. . . . . . . . . . . . . . . . . . . . .  Actualizacao
 	glutSwapBuffers();
 }
@@ -738,6 +844,12 @@ void keyboard(unsigned char key, int x, int y) {
 		updateLuz();
 		glutPostRedisplay();
 		break;
+	case 'b':
+	case 'B':
+		opcao = opcao + 10;
+		glutPostRedisplay();
+		break;
+
 		//--------------------------- Iluminacaoda sala
 	case 'i':
 	case 'I':
@@ -807,6 +919,46 @@ void keyboard(unsigned char key, int x, int y) {
 			glutPostRedisplay();
 			break;
 		}
+	case 'm':
+	case 'M':
+		material = (material + 1) % 18;
+		initMaterials(material);
+		glutPostRedisplay();
+	case 'o':
+	case 'O':
+		if (uniCount > 10) {
+			flagCount = 1;
+		}
+		else if (uniCount < 0) {
+			flagCount = 0;
+		}
+
+		if (flagCount == 0) {
+			if (uniCount < 2) {
+				uniCount = uniCount + 1;
+			}
+			else if (uniCount < 4) {
+				uniCount = uniCount + 0.7;
+			}
+			else if (uniCount < 9) {
+				uniCount = uniCount + 0.5;
+			}
+			else
+				uniCount = uniCount + 0.2;
+		}
+		else {
+			if (uniCount > 9) {
+				uniCount = uniCount - 0.25;
+			}
+			else if (uniCount > 4) {
+				uniCount = uniCount - 0.5;
+			}
+			else
+				uniCount = uniCount - 1;
+		}
+
+		glutPostRedisplay();
+		break;
 	case 'q':
 	case 'Q':
 		if (!door)  {

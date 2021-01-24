@@ -200,6 +200,9 @@ GLfloat localCorAmb[4] = { (GLfloat)luzR * intensidadeT,(GLfloat)luzG * intensid
 GLfloat localCorDif[4] = { (GLfloat)luzR * intensidadeT,(GLfloat)luzG * intensidadeT,(GLfloat)luzB * intensidadeT, 1.0 };
 GLfloat localCorEsp[4] = { (GLfloat)luzR * intensidadeT,(GLfloat)luzG * intensidadeT,(GLfloat)luzB * intensidadeT, 1.0 };
 
+//freeglut.lib
+//glew32d.lib
+//opengl32.lib
 
 GLint   ligaFoco = 1;
 GLfloat focoCutoff = 4.0;
@@ -261,7 +264,7 @@ GLvoid resize(GLsizei width, GLsizei height) {
 
 void initTexturas()
 {
-	
+
 	glGenTextures(1, &texture[0]);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	imag.LoadBmpFile("blackwood.bmp");
@@ -287,7 +290,7 @@ void initTexturas()
 		(GLfloat)imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
 		imag.ImageData());
 
-	
+
 	glGenTextures(1, &texture[2]);
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	imag.LoadBmpFile("mordenGreyWall.bmp");
@@ -300,7 +303,7 @@ void initTexturas()
 		(GLfloat)imag.GetNumRows(), 0, GL_RGB, GL_UNSIGNED_BYTE,
 		imag.ImageData());
 
-	
+
 	glGenTextures(1, &texture[3]);
 	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	imag.LoadBmpFile("post.bmp");
@@ -414,7 +417,7 @@ void InitShader(void) {
 
 	glUniform1f(uniOp, opcao);
 	glUniform3fv(uniDir, 1, Direcao);
-
+	
 	Direcao[0] = cos((3.14 * opcao / 180.0));
 	Direcao[2] = sin((3.14 * opcao / 180.0));
 
@@ -442,7 +445,7 @@ void DeInitShader(void) {
 //=========================================================================== INIT
 void inicializa(void)
 {
-	glClearColor(WHITE);        //ÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖApagar
+	glClearColor(BLACK);        //ÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖApagar
 	glShadeModel(GL_SMOOTH);    //ÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖÖInterpolacao de cores
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
@@ -470,25 +473,18 @@ void inicializa(void)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 void draw_meta3() {
-	glPushMatrix();
-	InitShader();
-	glTranslatef(1.5, 1.55, 2);
-	quad = gluNewQuadric();
-	gluSphere(quad, 2, 100, 20);
-	DeInitShader();
-	glLinkProgram(NULL);
-	glPopMatrix();
+
 }
 
 
 void drawChao() {
 
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture[1]);
+
 	glPushMatrix();
 	//glNormal3f(0, 1, 0);
-	
-	glTranslatef(0, 0.0, 0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[1]);
+	glTranslatef(0, -1.0, 0);
 	//glColor4f(BLACK);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0f, 0.0f);  	 glVertex3i(-xC, 0, -xC);
@@ -498,11 +494,27 @@ void drawChao() {
 	glEnd();
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
-}
-
-void drawFundoLid() {
 
 	
+	//initMaterials(3);
+}
+
+void draw_bola() {
+	glPushMatrix();
+	//initMaterials(12);
+	InitShader();
+	glTranslatef(1.5,1.1, 0.22);
+	quad = gluNewQuadric();
+	gluSphere(quad, 1, 50, 10);
+	DeInitShader();
+	glLinkProgram(NULL);
+	glPopMatrix();
+	initMaterials(3);
+
+}
+void drawFundoLid() {
+
+
 	glPushMatrix();
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -518,44 +530,17 @@ void drawFundoLid() {
 	glDisable(GL_TEXTURE_2D);
 }
 
-void Door_Handle(){
+void Door_Handle() {
 	/*TODO */
-	
+
 	//glEnable(GL_TEXTURE_2D);
 	//glBindTexture(GL_TEXTURE_2D, texture[3]);
-	initMaterials(11);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture[2]);
-	glPushMatrix();
-	//initMaterials(11);
-	glTranslatef(0.6+hand_2, 2.45,0.22);
-	glRotatef(-new_angle, 0.0, 1.0, 0.0);
-	glScalef(0.22, 0.08,0.11);
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, frente);
-	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, back);
-	glPopMatrix();
-
-	//glDisable(GL_TEXTURE_2D);
-}
-
-void Door_Handle2() {
-	/*TODO */
 	
-	//glEnable(GL_COLOR_MATERIAL);
-	//glColor4f(BLUE);
-	//glColorMaterial(GL_FRONT_AND_BACK, GL_Ambient);
-	//
-	//
-	initMaterials(11);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
+	initMaterials(11);
 	glPushMatrix();
-	//
-	glTranslatef(-0.4-hand_1, 2.45, 0.22);
+	glTranslatef(0.6 + hand_2, 2.45, 0.22);
 	glRotatef(-new_angle, 0.0, 1.0, 0.0);
 	glScalef(0.22, 0.08, 0.11);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
@@ -565,12 +550,40 @@ void Door_Handle2() {
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, frente);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, back);
 	glPopMatrix();
-	//glDisable(GL_TEXTURE_2D);
+	glDisable(GL_TEXTURE_2D);
 }
 
-void drawEixos(){
+void Door_Handle2() {
+	/*TODO */
 
+	//glEnable(GL_COLOR_MATERIAL);
+	//glColor4f(BLUE);
+	//glColorMaterial(GL_FRONT_AND_BACK, GL_Ambient);
+	//
+	//
 	
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture[2]);
+	initMaterials(11);
+	glPushMatrix();
+	//
+	
+	glTranslatef(-0.4 - hand_1, 2.45, 0.22);
+	glRotatef(-new_angle, 0.0, 1.0, 0.0);
+	glScalef(0.22, 0.08, 0.11);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, frente);
+	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, back);
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+}
+
+void drawEixos() {
+
+
 	glPushMatrix();
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Eixo X
 	glColor4f(RED);
@@ -616,7 +629,7 @@ void drawGaveta2() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glPushMatrix();
-	
+
 	glTranslatef(0.0, 1.90, zPosJ - 0.9);
 	//glRotatef(angle, 0.0, 1.0, 0.0);
 	glScalef(1.8, 0.6, 0.8);
@@ -633,14 +646,14 @@ void drawFundo() {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glPushMatrix();
-	
-	
+
+
 	glTranslatef(0.0, 2.0, -0.9);
 	glRotatef(90, 1.0, 0.0, 0.0);
 	glScalef(2, 1.0, 2);
 	//----------------------------------------------
 
-	
+
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, baixo);
@@ -656,11 +669,11 @@ void drawPortaEsq() {
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	//glColorPointer(3, GL_FLOAT, 0, cor);	// podia ser modificada a cor !
 	glPushMatrix();
-	
+
 	glTranslatef(-rot_orient, yPosition, zPosition);
 	glRotatef(-new_angle, 0.0, 1.0, 0.0);
 	glScalef(1.0, 2.0, 0.1);
-	
+
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, cima);   // desenhar uma das faces da mesa
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, esquerda);
 	glDrawElements(GL_POLYGON, 4, GL_UNSIGNED_INT, direita);
@@ -679,7 +692,7 @@ void drawPortaDir() {
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	//glColorPointer(3, GL_FLOAT, 0, cor);	 podia ser modificada a cor !
 	glPushMatrix();
-	
+
 	glTranslatef(rot_orient, yPosition, zPosition);
 	glRotatef(new_angle, 0.0, 1.0, 0.0);
 	glScalef(1, 2, 0.1);
@@ -703,13 +716,13 @@ void drawPortaDir() {
 
 
 void drawVidro() {
-	if(Transp){
+	if (Transp) {
 		glEnable(GL_BLEND);
 	}
-	
+	initMaterials(5);
 	//glColorPointer(3, GL_FLOAT, 0, cor);	// podia ser modificada a cor !
 	glPushMatrix();
-	initMaterials(5);
+	
 	glTranslatef(0.0, 3.2, -0.1);
 	glRotatef(0.0, 0.0, 1.0, 0.0);
 	glScalef(1.8, 0.6, 0.1);
@@ -747,7 +760,7 @@ void display(void) {
 	//================================================================= APaga ecrã e lida com profundidade (3D)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHTING);
 	//================================================================= Não modificar !!!!!!!!!!!!
 	glViewport(0, 0, wScreen, hScreen);
 	glMatrixMode(GL_PROJECTION);
@@ -758,22 +771,23 @@ void display(void) {
 	gluLookAt(obsP[0], obsP[1], obsP[2], 0, 0, 0, 0, 1, 0);
 	//================================================================= Não modificar !!!!!!!!!!!!
 
-	
+
 	//…………………………………………………………………………………………………………………………………………………………Objectos
-	iluminacao();
-	iluminacaoFoco();
-	Door_Handle();
-	Door_Handle2();
+	//iluminacao();
+	//iluminacaoFoco();
+	//Door_Handle();
+	//Door_Handle2();
 	drawEixos();
-	drawChao();
-	drawGaveta();
-	drawFundo();
-	drawFundoLid();
-	drawGaveta2();
-	drawPortaEsq();
-	drawPortaDir();
-	drawVidro();
-	//draw_meta3();
+	//drawGaveta();
+	//drawFundo();
+	//drawFundoLid();
+	//drawGaveta2();
+	//drawPortaEsq();
+	//drawPortaDir();
+	//drawChao();
+	draw_bola();
+	//drawVidro();
+	
 	//. . . . . . . . . . . . . . . . . . . . .  Actualizacao
 	glutSwapBuffers();
 }
@@ -797,30 +811,30 @@ void updateLuz() {
 
 void keyboard(unsigned char key, int x, int y) {
 	switch (key) {
-	/*case 'f':
-	case 'F':
-		if (limite) {
-			new_angle += 24;
-			if (new_angle > 89) {
-				door = 1;
-				limite = 0;
+		/*case 'f':
+		case 'F':
+			if (limite) {
+				new_angle += 24;
+				if (new_angle > 89) {
+					door = 1;
+					limite = 0;
+				}
+
 			}
-				
-		}
-		else {
-			new_angle -= 24;
-			if (new_angle < 0.1) {
-				limite = 1;
-				door = 0;
+			else {
+				new_angle -= 24;
+				if (new_angle < 0.1) {
+					limite = 1;
+					door = 0;
+				}
+
 			}
-				
-		}
 
 
 
-		glutPostRedisplay();
-		break;
-		*/
+			glutPostRedisplay();
+			break;
+			*/
 
 	case 'd':
 	case 'D':
@@ -876,7 +890,7 @@ void keyboard(unsigned char key, int x, int y) {
 		updateLuz();
 		glutPostRedisplay();
 		break;
-	
+
 	case 'p':
 	case 'P':
 		Transp = !Transp;
@@ -903,12 +917,12 @@ void keyboard(unsigned char key, int x, int y) {
 		}
 	case 'k':
 	case 'K':
-		if (door){
+		if (door) {
 			if (gav_dois) {
 				zPosJ2 += 0.125;
 
 				if (zPosJ2 > 1.5)
-					gav_dois= 0;
+					gav_dois = 0;
 			}
 			else {
 				zPosJ2 -= 0.125;
@@ -919,11 +933,13 @@ void keyboard(unsigned char key, int x, int y) {
 			glutPostRedisplay();
 			break;
 		}
+
 	case 'm':
 	case 'M':
 		material = (material + 1) % 18;
 		initMaterials(material);
 		glutPostRedisplay();
+
 	case 'o':
 	case 'O':
 		if (uniCount > 10) {
@@ -961,13 +977,13 @@ void keyboard(unsigned char key, int x, int y) {
 		break;
 	case 'q':
 	case 'Q':
-		if (!door)  {
+		if (!door) {
 			//mudar o angulo para ter uma media e a porta ir arrastando
 
 			new_angle = 90;
 			rot_orient = 1.9;
 			zPosition = 1.0;
-			
+
 			door = 1;
 		}
 		else {
@@ -978,6 +994,13 @@ void keyboard(unsigned char key, int x, int y) {
 			zPosition = 0.0;
 			door = 0;
 		}
+		glutPostRedisplay();
+		break;
+
+		//--------------------------- Escape
+	case 27:
+		exit(0);
+		break;
 	}
 }
 
@@ -1017,6 +1040,9 @@ int main(int argc, char** argv) {
 	glutCreateWindow("Etiandro António - 2017290285|    |Mover gaveta 1:'L'|    |Mover gaveta 2:'K'|   |Abrir/fechar portas:'Q'|      |Observador:'SETAS'|  ");
 
 	inicializa();
+	GLenum err = glewInit();
+	
+
 
 	glutSpecialFunc(teclasNotAscii);
 	glutReshapeFunc(resize);

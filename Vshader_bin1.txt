@@ -7,13 +7,7 @@ varying vec3  vNormal;
 
 void main(void){
 
-    // vec3 direcaoL = vec3( 3, 0, 4);
-    //vec3 nNormal = normalize( vNormal);
-    //float intensity = dot( direcaoL, nNormal);
-    //intensity = max ( intensity, 0.0);
-    //gl_FrontColor = intensity*gl_Color ; // luz branca
-    //gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-
+  
     vNormal = gl_Normal ;
     //gl_FrontColor = intensity * gl_Color;
     vec4 a = gl_Vertex ;

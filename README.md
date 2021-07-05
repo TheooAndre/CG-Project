@@ -1,2 +1,2 @@
 # CG-Project
-Projeto de da cadeira de CG feito em OpenGL
+Projeto de da cadeira de Computação Gráfica feito em OpenGL
